@@ -1,7 +1,7 @@
 CS127L
 ======
 
-Useful snippets of code available in **snippets** directory
+Useful snippets of code available in **[snippets](https://github.com/alexako/CS127L/tree/master/snippets)** directory
 
 Solutions and logs of the Programming Exercises for CS127 lab
 
