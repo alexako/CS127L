@@ -101,16 +101,16 @@ int main()
 			quitProgram();
 		}
 
-		//Remove if User-defined functions are not allowed
+        //Remove if User-defined functions are not allowed
         clearScreen();
 
 		if (attempts > 1)
-			cout << "Attempt: " << attempts << " out of 3" << endl;
-		cout << "Enter 4-digit pin: ";
-		cin >> pin;
+            cout << "Attempt: " << attempts << " out of 3" << endl;
+        cout << "Enter 4-digit pin: ";
+        cin >> pin;
 
-		pin = passWord(pin);
-		attempts++;
+        pin = passWord(pin);
+        attempts++;
 
 	} while (pin < 1);
 
@@ -184,7 +184,7 @@ char tryAgain() {
 			break;
 
         else {
-            clearScreen();
+            clearScreen(); //<---- Remove if User-defined functions are not allowed
             cerr << "Invalid input: " << again << endl
                 << "Try again. " << endl << endl;
         }
@@ -258,6 +258,7 @@ double depositMoney(double& mon) {
     ***/
 
 	double deposit;
+    bool condition[2];
 
 /*
     // START Menu banner
@@ -283,18 +284,18 @@ double depositMoney(double& mon) {
 		// Remove if User-defined functions are not allowed
 		clearScreen();
 
-        bool condition1 = !fmod(deposit, 100);
-        bool condition2 = (deposit >= 500);
+        condition[0] = !fmod(deposit, 100);
+        condition[1] = (deposit >= 500);
 
-		if (!condition1) {
+		if (!condition[0]) {
 			cerr << endl
 				<< "Deposit amount must be in increments of 100";
 		}
-		if (!condition2) {
+		if (!condition[1]) {
 			cerr << endl
 				<< "Deposit amount must be greater than P500.00";
 		}
-		else if (condition1 && condition2)
+		else if (condition[0] && condition[1])
 			break;
 
 	} while (true);
@@ -320,7 +321,11 @@ void widrawMoney(double& WMoney) {
 
 
 	double withdrawal;
-	int thousands, fives, thundreds, hundreds;
+    bool condition[3];
+	int thousands,
+		fives,
+		thundreds,
+		hundreds;
 
 /*
     // START Menu banner
@@ -346,24 +351,24 @@ void widrawMoney(double& WMoney) {
 		// Remove if User-defined functions are not allowed
 		clearScreen();
 
-        bool condition1 = (withdrawal >= 500 && withdrawal <= 5000);
-        bool condition2 = (withdrawal <= WMoney);
-        bool condition3 = !fmod(withdrawal, 100);
+        condition[0] = (withdrawal >= 500 && withdrawal <= 5000);
+        condition[1] = (withdrawal <= WMoney);
+        condition[2] = !fmod(withdrawal, 100);
 
-		if (!condition1) {
+		if (!condition[0]) {
 			cerr << endl
 				<<"Withdrawal amount must be between P500.00 and P5,000.00 (inclusive)";
 		}
-		if (!condition2) {
+		if (!condition[1]) {
 			cerr << endl
 				<< "Insufficient funds" << endl
 				<< "Remaining balance: " << WMoney;
 		}
-		if (!condition3) {
+		if (!condition[2]) {
 			cerr << endl
 				<< "Withdrawal amount must be in increments of 100";
 		}
-		else if (condition1 && condition2 && condition3)
+		else if (condition[0] && condition[1] && condition[2])
 			break;
 
 	} while (true);
@@ -372,9 +377,9 @@ void widrawMoney(double& WMoney) {
 
 	// Dispense output | Breakdown
 	thousands = withdrawal / 1000;
-	fives = fmod(withdrawal, 1000) / 500;   //(withdrawal % 1000) / 500;
-	thundreds = fmod(fmod(withdrawal, 1000), 500) / 200; //((withdrawal % 1000) % 500) / 200;
-	hundreds = fmod(fmod(fmod(withdrawal, 1000), 500), 200) / 100; //(((withdrawal % 1000) % 500) % 200) / 100;
+	fives = fmod(withdrawal, 1000) / 500;
+	thundreds = fmod(fmod(withdrawal, 1000), 500) / 200;
+	hundreds = fmod(fmod(fmod(withdrawal, 1000), 500), 200) / 100;
 
     // Remove if User-defined functions are not allowed
     clearScreen();
