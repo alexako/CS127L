@@ -9,6 +9,7 @@
 
 
 #include <iostream>
+#include <stdio.h>
 #include <cstdlib>
 #include <iomanip>
 #include <math.h>   //Need for fmod() '%' is only for ints
@@ -18,7 +19,7 @@ using namespace std;
 int selectMenu();
 //this function will display the main menu options
 //and will return a value of the selected transaction
-// the program should validate the input : selection of options should be 1,2,3 and 4 only 
+// the program should validate the input : selection of options should be 1,2,3 and 4 only
 //use do-while loop for validation of option
 
 double depositMoney(double& mon);
@@ -59,7 +60,7 @@ int passWord(int);
 //if password is correct then this will return the value of 1; if not correct this will return the value of -1
 //this function is called inside the main menu?
 
-// Comment out if this is not allowed
+// Comment out the following function definitions if this is not allowed
 void clearScreen() {
     #ifdef __cplusplus__
       #include <cstdlib>
@@ -70,43 +71,56 @@ void clearScreen() {
     if (system("CLS")) system("clear");
 }
 
+void PrintBanner(const char* operation) {
+    /*** Prints banner on top of the screen for each operation ***/
+
+    for (int i = 0; i < 30; i++) {cout << "=";}
+    cout << endl
+        << "\t  " << operation
+        << endl;
+    for (int i = 0; i < 30; i++) {cout << "=";}
+    cout << endl << endl;
+}
+
 // Change back to void type and remove return statement
 int main()
 {
-	double balance=10000.00;
+	double balance = 10000.00;
 	char ch;
 	int select;
 
 	//you can add code here and declaration here
 	int pin;
-	int attempts = 0;
+	int attempts = 1;
 
 	do {
 
-		if (attempts >= 3) {
+		if (attempts >= 4) {
 			cerr << endl
 				<< "Too many unsuccessful attempts. Exiting program." << endl;
 			quitProgram();
 		}
 
-		cout << endl << "Enter 4-digit pin: ";
+		//Remove if User-defined functions are not allowed
+        clearScreen();
+
+		if (attempts > 1)
+			cout << "Attempt: " << attempts << " out of 3" << endl;
+		cout << "Enter 4-digit pin: ";
 		cin >> pin;
 
 		pin = passWord(pin);
 		attempts++;
 
-		if (!pin)
-			cout << "Attempt: " << attempts << " out of 3" << endl;
-
 	} while (pin < 1);
 
 
-	cout<<showpoint<<fixed<<setprecision(2);
+	cout << showpoint << fixed << setprecision(2);
 
 
 	do {
 
-/*      // Uncomment if adding user-defined functions are not allowed
+/*      // Uncomment if adding user-defined functions are allowed
         // Start of simple clear
         #ifdef __cplusplus__
           #include <cstdlib>
@@ -117,30 +131,32 @@ int main()
         if (system("CLS")) system("clear");
         // end of simple clear
 */
-
+		//Remove if User-defined functions are not allowed
         clearScreen();
+
 		select = selectMenu ();
 
 		switch (select) {
-			case 1: clearScreen(); 
+			case 1: clearScreen(); // <---- Remove if User-defined functions are not allowed
 			    depositMoney(balance);   //add code here for DepositMoney
 				break;
-			case 2: clearScreen();
+			case 2: clearScreen(); // <---- Remove if User-defined functions are not allowed
 			    widrawMoney(balance);    //add code here for widrawMoney
 				break;
-			case 3: clearScreen();
+			case 3: clearScreen(); // <---- Remove if User-defined functions are not allowed
 			    cout << endl
 						<< "Current balance: "
 						<< balanceInquiry(balance);    //add code here for balanceInquiry;
 				break;
-			case 4: quitProgram();   //add code here for quitProgram(); //exit(0);
+			case 4:clearScreen(); // <--- Remove if User-defined functions are not allowed
+			    quitProgram();   //add code here for quitProgram(); //exit(0);
 		}
 
 		//you can add code here
 
 		ch = tryAgain ();
 
-	}while (ch=='Y' || ch == 'y');
+	} while (ch=='Y' || ch == 'y');
 
 	quitProgram();
 
@@ -155,6 +171,7 @@ int passWord(int pwd) {
 
 char tryAgain() {
     /*** Returns Y/n if user wants another transaction and to return to the main menu ***/
+
 	char again;
 
 	do {
@@ -171,7 +188,7 @@ char tryAgain() {
             cerr << "Invalid input: " << again << endl
                 << "Try again. " << endl << endl;
         }
-        
+
 
 	} while (true);
 
@@ -180,7 +197,6 @@ char tryAgain() {
 
 
 void quitProgram() {
-    clearScreen();
 	cout << "Thank you for banking with us!" << endl;
 	exit(0);
 }
@@ -195,9 +211,8 @@ int selectMenu() {
     /*** Outputs the main menu and returns the option selected by user ***/
 
 	int option;
-	int attempts = 0;
 
-
+/*
     // START Menu banner
     for (int i = 0; i < 30; i++)
         cout << "=";
@@ -205,10 +220,13 @@ int selectMenu() {
         << "\tMain Menu"
         << endl;
     for (int i = 0; i < 30; i++)
-        cout << "=";        
+        cout << "=";
     cout << endl << endl;
     // END Menu banner
-    
+*/
+    // Remove if User-defined functions are not allowed
+    PrintBanner("Main Menu");
+
 	cout << "Menu:" << endl
 		<< "\t1. Deposit" << endl
 		<< "\t2. Withdraw" << endl
@@ -233,7 +251,7 @@ int selectMenu() {
 
 
 double depositMoney(double& mon) {
-    /*** 
+    /***
         Deposits/adds the amount entered by user if it satisfies the following conditions:
             amount is a multiple of 100
             amount >= 500
@@ -241,6 +259,7 @@ double depositMoney(double& mon) {
 
 	double deposit;
 
+/*
     // START Menu banner
     for (int i = 0; i < 30; i++)
         cout << "=";
@@ -248,15 +267,21 @@ double depositMoney(double& mon) {
         << "\tDeposit Menu"
         << endl;
     for (int i = 0; i < 30; i++)
-        cout << "=";        
+        cout << "=";
     cout << endl << endl;
     // END Menu banner
+*/
+    // Remove if User-defined functions are not allowed
+    PrintBanner("Deposit");
 
 	do {
 		cout << endl
 			<< "Enter deposit amount: ";
 
 		cin >> deposit;
+
+		// Remove if User-defined functions are not allowed
+		clearScreen();
 
         bool condition1 = !fmod(deposit, 100);
         bool condition2 = (deposit >= 500);
@@ -297,7 +322,7 @@ void widrawMoney(double& WMoney) {
 	double withdrawal;
 	int thousands, fives, thundreds, hundreds;
 
-
+/*
     // START Menu banner
     for (int i = 0; i < 30; i++)
         cout << "=";
@@ -305,15 +330,21 @@ void widrawMoney(double& WMoney) {
         << "\tWithdrawal Menu"
         << endl;
     for (int i = 0; i < 30; i++)
-        cout << "=";        
+        cout << "=";
     cout << endl << endl;
     // END Menu banner
+*/
+    // Remove if User-defined functions are not allowed
+    PrintBanner("Withdrawal");
 
     do {
 	    cout << endl
 		    << "Enter withdrawal amount: ";
 
 	    cin >> withdrawal;
+
+		// Remove if User-defined functions are not allowed
+		clearScreen();
 
         bool condition1 = (withdrawal >= 500 && withdrawal <= 5000);
         bool condition2 = (withdrawal <= WMoney);
@@ -344,6 +375,10 @@ void widrawMoney(double& WMoney) {
 	fives = fmod(withdrawal, 1000) / 500;   //(withdrawal % 1000) / 500;
 	thundreds = fmod(fmod(withdrawal, 1000), 500) / 200; //((withdrawal % 1000) % 500) / 200;
 	hundreds = fmod(fmod(fmod(withdrawal, 1000), 500), 200) / 100; //(((withdrawal % 1000) % 500) % 200) / 100;
+
+    // Remove if User-defined functions are not allowed
+    clearScreen();
+    PrintBanner("Dispense");
 
 	cout << endl
 		<< "1000\t" << thousands << " = " << thousands * 1000 << endl
