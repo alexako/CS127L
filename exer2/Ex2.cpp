@@ -50,6 +50,17 @@ void clearScreen() {
         cout << endl;
 }
 
+void pauseScreen() {
+    char cont;
+    cout << "Press any key to continue...";
+    cin.get(); // Should work in windows
+
+    // Remove
+    cin >> cont;
+
+    cout << endl << endl;
+}
+
 // Change back to int
 int main()
 {
@@ -92,14 +103,12 @@ void choiceMenu(int ch)
     switch(ch) {
     case 1:
             //add code here -cramer's rule
-            int nums1[row][col];
+            int nums1[row][col], d, dx, dy;
             equation1(nums1, row);
-            cramer(
-               deter1(nums1, row),
-               deter2(nums1, row),
-               deter3(nums1, row)
-               );
-
+            d = deter1(nums1, row);
+            dx = deter2(nums1, row);
+            dy = deter3(nums1, row);
+            cramer(d, dx, dy);
         break;
     case 2:
             //add code here - frequency 11-20
@@ -119,7 +128,7 @@ char fexit()
 {
     //add code here
     clearScreen();
-    cout << "Exiting program..." << endl;
+    cout << "Exiting program...";
     exit(0);
 }//end fexit
 //////////////////////////////////
@@ -131,12 +140,18 @@ void equation1(int list[][col], int rsize)
     //Remove
     clearScreen();
 
-    cout << "Enter equation 1"
-         << "Ex. \n\t x + 3y = 12 should be entered as 1 3 12";
+    cout << "Enter equation 1" << endl
+         << "Ex. \n\t x + 3y = 12 should be entered as 1 3 12"
+         << endl
+         << " > ";
     cin >> a1 >> b1 >> c1;
 
-    cout << "Enter equation 2"
-         << "Ex. \n\t x + 3y = 12 should be entered as 1 3 12";
+    //Remove
+    clearScreen();
+    cout << "Enter equation 2" << endl
+         << "Ex. \n\t x + 3y = 12 should be entered as 1 3 12"
+         << endl
+         << " > ";
     cin >> a2 >> b2 >> c2;
 
     list[0][0] = a1;
@@ -146,25 +161,71 @@ void equation1(int list[][col], int rsize)
     list[1][1] = b2;
     list[1][2] = c2;
 
+    //Remove
+    clearScreen();
+
     // Output Equation entered
+    cout << "Equations:" << endl << endl
+         << "\t" << list[0][0] << "x + " << list[0][1]
+         << "y = " << list[0][2] << endl
+         << "\t" << list[1][0] << "x + " << list[1][1]
+         << "y = " << list[1][2] << endl
+         << endl;
+
+    //Remove
+    pauseScreen();
 
 }//end equation1
 ///////////////////////////////////////////
 int deter1(int list[][col],int size)
 {
     //add code here
+    cout << "D: \n" << list[0][0] << "\t" << list[0][1] << endl
+         << list[1][0] << "\t" << list[1][1] << endl
+         << endl;
+
+    cout << "(" << list[0][0] << " x " << list[1][1] << ") - "
+         << "(" << list[0][1] << " x " << list[1][0] << ")"
+         << " = " << ((list[0][0] * list[1][1]) - (list[0][1] * list[1][0]))
+         << endl;
+
+    //Remove
+    pauseScreen();
+
     return ((list[0][0] * list[1][1]) - (list[0][1] * list[1][0]));
 }
 /////////////////////////////////////////
 int deter2(int list[][col],int size)
 {
     //add code here
+    cout << "Dx: \n" << list[0][2] << "\t" << list[0][1]  << endl
+         << list[1][2] << "\t" << list[1][1] << endl
+         << endl;
+
+    cout << "(" << list[0][2] << " x " << list[1][1] << ") - "
+         << "(" << list[1][2] << " x " << list[0][1] << ")"
+         << " = " << ((list[0][2] * list[1][1]) - (list[1][2] * list[0][1]))
+         << endl;
+
+    //Remove
+    pauseScreen();
     return ((list[0][2] * list[1][1]) - (list[1][2] * list[0][1]));
 }
 ///////////////////////////////////////////
 int deter3(int list[][col],int size)
 {
     //add code here
+    cout << "Dy: \n" << list[0][0] << "\t" << list[0][2] << endl
+         << list[1][0] << "\t" << list[1][2] << endl
+         << endl;
+
+    cout << "(" << list[0][0] << " x " << list[1][2] << ") - "
+         << "(" << list[0][2] << " x " << list[1][0] << ")"
+         << " = " << ((list[0][0] * list[1][2]) - (list[0][2] * list[1][0]))
+         << endl;
+
+    //Remove
+    pauseScreen();
     return ((list[0][0] * list[1][2]) - (list[0][2] * list[1][0]));
 }
 ////////////////////////////////////////////
@@ -175,6 +236,12 @@ void cramer(int D, int Dx, int Dy)
 
 	//Remove
     clearScreen();
+
+    cout << "In cramer()" << endl
+         << "D: " << D << endl
+         << "Dx: " << Dx << endl
+         << "Dy: " << Dy << endl;
+    pauseScreen();
 
     if (D == 0) {
         cerr << "The system is either inconsistent or dependent. "
@@ -188,9 +255,13 @@ void cramer(int D, int Dx, int Dy)
 
     // Output D, Dx, Dy
 
-    cout << "Solution: (" << x << ", " << y << ")" << endl
-         << "x = " << x << endl
-         << "y = " << y << endl;
+    cout << "Dx/D = " << x << endl
+         << "Dy/D = " << y << endl
+         << endl
+         << "Solution: (" << x << ", " << y << ")" << endl;
+
+    //Remove
+    pauseScreen();
 }
 //////////////////////////
 void tryAgain()
@@ -263,10 +334,5 @@ void FREQUENCY(int list[],int lsize)
 
     cout << endl;
 
-    char cont;
-    cout << "Press any key to continue...";
-    cin.get(); // Should work in windows
-
-    // Remove
-    cin >> cont;
+    pauseScreen();
 }
