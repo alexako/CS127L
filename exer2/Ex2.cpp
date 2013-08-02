@@ -141,7 +141,7 @@ void equation1(int list[][col], int rsize)
     clearScreen();
 
     cout << "Enter equation 1" << endl
-         << "Ex. \n\t x + 3y = 12 should be entered as 1 3 12"
+         << "Ex. \n   x + 3y = 12 should be entered as 1 3 12"
          << endl
          << " > ";
     cin >> a1 >> b1 >> c1;
@@ -149,7 +149,7 @@ void equation1(int list[][col], int rsize)
     //Remove
     clearScreen();
     cout << "Enter equation 2" << endl
-         << "Ex. \n\t x + 3y = 12 should be entered as 1 3 12"
+         << "Ex. \n   x + 3y = 12 should be entered as 1 3 12"
          << endl
          << " > ";
     cin >> a2 >> b2 >> c2;
@@ -237,8 +237,7 @@ void cramer(int D, int Dx, int Dy)
 	//Remove
     clearScreen();
 
-    cout << "In cramer()" << endl
-         << "D: " << D << endl
+    cout << "D: " << D << endl
          << "Dx: " << Dx << endl
          << "Dy: " << Dy << endl;
     pauseScreen();
@@ -250,6 +249,7 @@ void cramer(int D, int Dx, int Dy)
         tryAgain();
     }
 
+    // Check if doubles or accurate rounding to whole is necessary
     x = Dx / D,
     y = Dy / D;
 
