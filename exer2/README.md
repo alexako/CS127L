@@ -1,22 +1,3 @@
-###CS127L – Problem Solving and Programming 2 (Laboratory)
-
-####Program Exercise # 2
-
-######Directions:
-
-1. For each solution you need to put on the first part of your code comment lines indicating the problem number, your name, today’s date, and your terminal no.
-
-Ex. 
-    /*
-     *  Programmer: FUENTES, Gloren S.
-     *  Date Created: 7/30/2013
-     *  Terminal No: 00
-     *  Program: MIT
-     *  Course / Section: CS127L/AT3
-     *  Purpose: copy paste the problem below
-     */
-
-2. Save a copy of your code to drive z (celerio/mapped network drive) with a filename example GFUENTES-EXER02.cpp
 
 ######Exercise 2 (100 points)
 
