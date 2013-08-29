@@ -19,12 +19,12 @@
 using namespace std;
 
 
-int * InsertionSort(int list[], int size) {
+void InsertionSort(int list[], int size) {
 
     int on_deck, comparing;
 
     if (size <= 1)
-        return list;
+        return;
 
     for (int i = 1; i < size; i++) {
         on_deck = list[i];
@@ -32,38 +32,36 @@ int * InsertionSort(int list[], int size) {
 
         while ((comparing >= 0) && (on_deck < list[comparing])) {
             list[comparing+1] = list[comparing];
-            list[comparing] = on_deck
+            list[comparing] = on_deck;
             comparing -= 1;
 
         }
     }
-
-    return list;
 }
 
-int * BubbleSort(int list[], int size) {
+void BubbleSort(int list[], int size) {
 
     int compare, on_deck;
 
     if (size <= 1)
-        return list;
+        return;
 
     for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            on_deck = list[i];
-            compare = list[j];
+        for (int j = 0; j < size - 1; j++) {
+            on_deck = list[j];
+            compare = list[j+1];
 
             if (compare < on_deck) {
-                Swap(on_deck, compare);
+                int tmp = on_deck;
+                list[j] = list[j+1];
+                list[j+1] = tmp;
             }
         }
     }
-
-    return list;
 }
 
-
-int * MergeSort(int list[], int size) {
+/**
+void MergeSort(int &list[], int size) {
 
     int sizeL, sizeR;
 
@@ -92,42 +90,51 @@ int * MergeSort(int list[], int size) {
     else
         sorted_list.extend(MergeSort(right));
     }
-
-    return sorted_list;
 }
+***/
 
+void QuickSort(int list[], int left, int right) {
 
-int * QuickSort(int list[], int size) {
+    int i = left, j = right;
+    int pivot = list[(i + j)/2];
 
-    if (size <= 1)
-        return list;
+    while (i <= j) {
+        while (list[i] < pivot)
+            i++;
+        while (list[j] > pivot)
+            j--;
+        if (i <= j) {
+            int tmp = list[i];
+            list[i] = list[j];
+            list[j] = tmp;
 
-    int sorted_list[size] = {};
-    int last = size - 1,
-        change = list[last];
+            i++;
+            j--;
+        }
+    }
 
-    int low[] = {};
-    int high[] = {};
+    if (left < j)
+        QuickSort(list, left, j);
 
-    for (int index = 0;index < )
-
-    return sorted_list;
+    if (i < right)
+        QuickSort(list, i, right);
 }
 
 
 int main() {
 
-    int nums[5];
+    int size = 5;
+    int nums[size];
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < size; i++) {
         cout << "Enter a number: ";
         cin >> nums[i];
     }
 
-    Quicksort(nums, 5);
+    BubbleSort(nums, size);
 
     cout << "Sorted array: ";
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < size; i++)
         cout << nums[i] << " ";
 
     cout << endl;
