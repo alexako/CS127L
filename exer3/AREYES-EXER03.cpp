@@ -193,18 +193,19 @@ void MilesPerrGallon(double *ptr1,double *ptr2)
     for (int k = 0; k < size; k++)
         *(mpgPtr + k) = *(ptr1 + k) / *(ptr2 + k);
 
-    //Display results ***Make into table
+    //Display results
 //    system("cls");
+
+    cout << showpoint << fixed << setprecision(2);
     cout << "Miles \t Gallons \tMPG \n"
-         << "============================================"
-         << "\n";
+         << "=================================\n";
     for (int l = 0; l < size; l++)
         cout << *(ptr1 + l) << "\t  " << *(ptr2 + l)
              << "\t       = " << *(mpgPtr + l) << "\n";
 
-    cout << "\n";
+    cout << "=================================\n\n"
+         << "Press any key to continue...";
 
-    cout << "Press any key to continue...";
 //    system("pause");
     main();
 }
