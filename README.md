@@ -13,3 +13,7 @@ Solutions and logs of the Programming Exercises for CS127 lab
 **[Exercise 2 - Cramer's Rule and Frequency](https://github.com/alexako/CS127L/blob/master/exer2/Ex2.cpp)**
  - The order of parameters processed is last to first foo(last, next, first). So, I assigned variables to store the return values to process the deter functions in correct order.
  - Not sure if x and y values should be accurately rounded to next whole number, some decimal point, or truncated as an int.
+
+**[Exercise 3 - Miles Per Gallon and Sort Array using Pointers](https://github.com/alexako/CS127L/blob/master/exer3/AREYES-EXER03.cpp)**
+ - Miles Per Gallon was another straight forward implementation of class lectures
+ - Used Insertion sort but problem stated values should be processed in sorted order
