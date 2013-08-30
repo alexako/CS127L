@@ -28,7 +28,7 @@ int main()
    char ans;
 
    do{
-   //system("cls");
+//   system("cls");
    cout<<"----------O P T I O N S----------\n"
        <<"[1] Compute Miles per Gallon \n"
        <<"[2] Sorting of Numbers\n"
@@ -46,7 +46,7 @@ int main()
    {
     //add code here
         cerr << "Invalid input.\n"
-            << "Restoring input stream.\n\n";
+             << "Restoring input stream.\n\n";
         cin.clear();
         cin.ignore(100, '\n');
    }
@@ -54,8 +54,9 @@ int main()
 
     switch(ans)
     {
-//    case '1':   //add code here
-//        break;
+    case '1':   //add code here
+        MperG();
+        break;
     case '2':   //add code here
         getSort();
         break;
@@ -74,7 +75,7 @@ int main()
             }
             catch(char e) {
                 cerr << "Invalid entry: " << e << "\n"
-                    << "Restoring input stream.\n\n";
+                     << "Restoring input stream.\n\n";
                 cin.clear();
                 cin.ignore(100, '\n');
             }
@@ -89,46 +90,85 @@ int main()
 }
 
 ////////////////////////
-/***
 void MperG()
 {
 //add code here
 
-for()
+    double miles,
+        gallons,
+        *milPtr,
+        *galPtr;
+
+    milPtr = new double[size];
+    galPtr = new double[size];
+
+for(int i = 0; i < size; i++)
     {
         //add code here
-        while(){
+        while(true){
 
-//add code here
-
+        //add code here
         try{
 
-//add code here
+            //add code here
+            cout << "Enter miles (100-250) inclusive: ";
+            cin >> miles;
 
+            if (!cin)
+                throw -1.0;
+            else if (miles < 100 || miles > 250)
+                throw miles;
+            else {
+                *(milPtr + i) = miles;
+                break; // out of while loop
+            }
         }//end try
-        catch()
+        catch(double m)
         {
             //add code here
+            cerr << "Invalid input";
+            if (m != -1.0)
+                cerr << ": " << m;
+            cerr << "\nRestoring input stream. \n\n";
+            cin.clear();
+            cin.ignore(100, '\n');
         }//end catch
 
              //add code here
         }//end while
     }//loop for miles
-***/
-/*********************************************************/ /***
-//add code here
-    for()
+
+/*********************************************************/ 
+    //add code here
+    for(int j = 0; j < size; j++)
     {
         //add code here
-        while()
+        while(true)
 {
         //add code here
         try{
                 //add code here
+                cout << "Enter gallons (5-25) inclusive: ";
+                cin >> gallons;
+
+                if (!cin)
+                    throw -1.0;
+                else if (gallons < 5 || gallons > 25)
+                    throw gallons;
+                else {
+                    *(galPtr + j) = gallons;
+                    break; //out of while loop
+                }
         }//end try
-        catch()
+        catch(double g)
         {
             //add code here
+            cerr << "Invalid input";
+            if (g != -1.0)
+                cerr << ": " << g;
+            cerr << "\nRestoring input stream. \n\n";
+            cin.clear();
+            cin.ignore(100, '\n');
         }//end catch
 
              //add code here
@@ -136,9 +176,8 @@ for()
         }//end while
     }//loop for gallons
 
-
-//add code here
-
+    //add code here
+    MilesPerrGallon(milPtr, galPtr);
 
 }
 ////////////////////////
@@ -146,9 +185,30 @@ void MilesPerrGallon(double *ptr1,double *ptr2)
 {
 
     //add code here
+    double *mpgPtr;
 
+    mpgPtr = new double[size];
+
+    // Calculate miles per gallon
+    for (int k = 0; k < size; k++)
+        *(mpgPtr + k) = *(ptr1 + k) / *(ptr2 + k);
+
+    //Display results ***Make into table
+//    system("cls");
+    cout << "Miles \t Gallons \tMPG \n"
+         << "============================================"
+         << "\n";
+    for (int l = 0; l < size; l++)
+        cout << *(ptr1 + l) << "\t  " << *(ptr2 + l)
+             << "\t       = " << *(mpgPtr + l) << "\n";
+
+    cout << "\n";
+
+    cout << "Press any key to continue...";
+//    system("pause");
+    main();
 }
-/////////////////////////////////////// ***/
+///////////////////////////////////////
 void getSort()
 {
     //add code here
@@ -172,7 +232,7 @@ void getSort()
             cin.clear();
             cin.ignore(100, '\n');
         }
-    }
+    }// End get size
 
     Sptr = new int[LIST_SIZE];
 
@@ -194,12 +254,12 @@ void getSort()
             }
             catch(int) {
                 cerr << "Invalid input. \n"
-                    << "Restoring input stream. \n\n";
+                     << "Restoring input stream. \n\n";
                 cin.clear();
                 cin.ignore(100, '\n');
             }
         }
-    }
+    }// End get elements
 
 
     // Insertion Sort
@@ -215,7 +275,7 @@ void getSort()
             comparing -= 1;
 
         }
-    }
+    } // End Insertion Sort
 
     displaySort(Sptr);
 
