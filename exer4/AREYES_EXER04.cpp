@@ -52,7 +52,7 @@ int main() //change back to void type
             
             switch(choice) {
                 case 'a':
-                    while (true) { // 1: main loop for palindrome
+                    while (true) { // 1: palindrome loop
                         char input[120];
                         
                         while (true) { // 2: loop for valid input of string
@@ -87,7 +87,7 @@ int main() //change back to void type
                                 cin.clear();
                                 cin.ignore(100, '\n');
                             }
-                        }
+                        } // End valid input loop
 
                         palindrome(input); // Check if palindrome
                         #ifdef _WIN32
@@ -122,9 +122,42 @@ int main() //change back to void type
                                 cin.ignore(100, '\n');
                             }
                         } // End ask user to try again
-                    }
+                    } // End main palindrome loop
                     break;
                 case 'b':
+                    while (true) { // 1: counting loop
+
+                        counting();
+                        
+                        // Ask user to try again
+                        #ifdef _WIN32
+                        system("CLS");
+                        #endif
+                        char again;
+                        while (true) { // 3: loop for valid input --> again
+                            cout << "Do you want to try again [y/n]\n"
+                                 << "Choice: ";                                
+
+                            try {
+                                cin >> again;
+
+                                switch (tolower(again)) {
+                                    case 'y':
+                                        break; // out of switch
+                                    case 'n':
+                                        main();
+                                    default:
+                                        throw again;
+                                }
+                                break; // out of loop 3
+                            }
+                            catch(char) {
+                                cerr << "Invalid input.\n";
+                                cin.clear();
+                                cin.ignore(100, '\n');
+                            }
+                        } // End ask user to try again
+                    } // End main counting loop
                     break;
                 case 'c':
                     quit();
@@ -148,7 +181,62 @@ int main() //change back to void type
 void counting()
 {
 //add all your code here
+    string sentence;
+    string letters = "abcdefghijklmnopqrstuvwxyz";
+    int *lCount = new int[letters.length()](); // lCount[l] = number of occurances
+    int words = 1;
 
+    #ifdef _WIN32
+    system("CLS");
+    #endif
+
+    cout << OPTIONB
+         << "Enter a valid a sentence (with spaces):\n> ";
+
+    cin.ignore();
+    getline(cin, sentence);
+
+    for (string::size_type i = 0; i < sentence.length(); i++) {
+        // Count words
+        if (isspace(sentence[i])) {
+            words += 1;
+        }
+
+        // Count l occurances
+        for (string::size_type j = 0; j < letters.length(); j++) {
+            if (tolower(sentence[i]) == letters[j]) {
+                lCount[j] += 1;
+            }
+        }
+    }
+
+
+    cout << "\nwords: " << words << endl;
+
+    //Print l count
+    for (string::size_type index = 0; index < letters.length(); index++) {
+        if (lCount[index])
+            cout << letters[index] << ": " << lCount[index] << "\n";
+    }
+    cout << "\n";
+
+    //Print inverted sentence
+    for (string::size_type l = 0; l < sentence.length(); l++) {
+        if (isalpha(sentence[l])) {
+            if (islower(sentence[l]))
+                cout << static_cast<char> (toupper(sentence[l]));
+            else
+                cout << static_cast<char> (tolower(sentence[l]));
+        }
+        else
+            cout << sentence[l];
+    }
+    cout << "\n";
+
+    #ifdef _WIN32
+    system("pause");
+    cout << "Press <enter> to continue...\n";
+    #endif
 }
 void palindrome(char sal[120])
 {
@@ -162,25 +250,37 @@ void palindrome(char sal[120])
 
     cout << sal;
 
-    int length = 0;
+    int length; // of string 
     for (length = 0; length < 120; length++) {
         if (sal[length] == '\0')
             break;
     }
 
+
     int i = 0, j = length-1;
-    while (i != j) {
-        if (sal[i] != sal[j]) {
-            cout << sal << " is not a palindrome.\n";
-            return;
-        }
+    bool ispal = true;;
+    while (i <= j) {
+        cout << "\ni: " << sal[i] << " j: " << sal[j]
+             << "len: " << length << endl;
+
+        if (sal[i] != sal[j])
+            ispal = false;
 
         i += 1;
         j -= 1;
     }
 
+    if (!ispal) {
+        cout << sal << " is not a palindrome.\n";
+        return;
+    }
+
     cout << sal << " is a palindrome!\n";
 
+    #ifdef _WIN32
+    system("pause");
+    cout << "Press <enter> to continue...\n";
+    #endif
 }
 void password()
 {
