@@ -4,7 +4,9 @@
 * Terminal No: 33
 * Program: BSCS
 * Course / Section: CS127L/AT2
-* Purpose: 
+* Purpose: Determine if a given string is a palindrome.
+*          Also count the letters and words of a given string
+*          and change the case of each letter.
 */
 
 #include<iostream>
@@ -21,6 +23,7 @@ using namespace std;
 #endif
 
 #ifdef __linux
+/** Remove these **/
 #include <curses.h>
 #include <unistd.h>
 #endif
@@ -40,7 +43,7 @@ const string OPTIONB = "[b] Read in a line of text\n";
 const string OPTIONC = "[c] Quit\n";
 bool authorized = false;
 
-// Remove this
+// Remove these
 void clearScreen() {
     #ifdef _WIN32
     system("CLS");
@@ -184,11 +187,11 @@ int main() //change back to void type
                     quit();
                 default:
                     throw choice;
-            }
-        }
+            }// End switch
+        }// End try block
         catch(char) {
             cerr << "Invalid option.";
-            stall(); // Remove and change to Sleep(1000);
+            stall(); // Remove and change to Sleep(2000);
         }
     } // End of main loop
 
@@ -199,12 +202,12 @@ void counting()
 //add all your code here
     string sentence;
     string letters = "abcdefghijklmnopqrstuvwxyz";
-    int *lCount = new int[letters.length()](); // lCount[l] = number of occurrences
+    int *lCount = new int[letters.length()](); // lCount[letter] = number of occurrences
     int words = 1;
 
     clearScreen(); //Remove and change to system("cls");
 
-    while (true) { // validate input
+    while (true) { // validate input --> sentence
         try {
             cout << OPTIONB
                  << "Enter a valid a sentence (with spaces):\n> ";
@@ -227,7 +230,7 @@ void counting()
             words += 1;
         }
 
-        // Count letter 
+        // Count letter occurrences
         for (string::size_type j = 0; j < letters.length(); j++) {
             if (tolower(sentence[i]) == letters[j]) {
                 lCount[j] += 1;
@@ -244,16 +247,16 @@ void counting()
     }
     cout << "\n";
 
-    //Print inverted sentence
-    for (string::size_type l = 0; l < sentence.length(); l++) {
-        if (isalpha(sentence[l])) {
-            if (islower(sentence[l]))
-                cout << static_cast<char> (toupper(sentence[l]));
+    //Print inverted case sentence
+    for (string::size_type letter = 0; letter < sentence.length(); letter++) {
+        if (isalpha(sentence[letter])) {
+            if (islower(sentence[letter]))
+                cout << static_cast<char> (toupper(sentence[letter]));
             else
-                cout << static_cast<char> (tolower(sentence[l]));
+                cout << static_cast<char> (tolower(sentence[letter]));
         }
         else
-            cout << sentence[l];
+            cout << sentence[letter];
     }
     cout << "\n";
 
@@ -272,10 +275,10 @@ void palindrome(char sal[120])
         stall(); // Remove and change to Sleep(1000);
         cout << ".";
     }
-    cout << "\n";
+    cout << "\n\n";
     // End loading
 
-    // Get length of given char string
+    // Get length of given char string **strlen() not working for some reason
     int length; // of string 
     for (length = 0; length < 120; length++) {
         if (sal[length] == '\0')
@@ -300,6 +303,9 @@ void palindrome(char sal[120])
     else
         cout << sal << " is a palindrome!\n";
 
+    if (length == 1)
+        cout << "But is only 1 letter. Not sure that counts...\n";
+
     cout << "\nPress <enter> to continue...\n";
     cin.ignore(100, '\n');
 }
@@ -311,7 +317,7 @@ void password()
 
     initscr(); //Remove curses.h
 
-    printw("Enter password\n> "); //change to conio.h
+    printw("Enter password\n> "); //change to cout maybe??
 
     string pass;
     int attempts = 0;
@@ -320,12 +326,13 @@ void password()
 
         pass = EnterPassword();
 
-        printw("Processing password"); //change to conio.h
+        printw("Processing password"); //change to cout maybe??
 
         for (int i = 0; i < 5; i++) {
-            stall(); // Remove and change to Sleep(1000);
-            printw("."); // change to conio.h
+            stall(); // Remove and change to Sleep(500);
+            printw("."); // change to cout maybe??
         }
+        printw("\n"); // change to cout maybe??
 
         if (pass == PASSKEY) {
             clearScreen(); //Remove and change to system("cls");
@@ -338,7 +345,7 @@ void password()
         }
         else {
             clearScreen(); //Remove and change to system("cls");
-            printw("Incorrect. Try again.\n> "); //change to conio.h
+            printw("Incorrect. Try again.\n> "); //change to cout maybe??
             attempts += 1;
         }
 
@@ -364,11 +371,12 @@ char menu()
 
     clearScreen(); //Remove and change to system("cls");
 
-    cout << "========== Menu ==========\n"
+    cout << "============= Menu =============\n"
          << "  Operations: \n"
          << "\t" << OPTIONA
          << "\t" << OPTIONB
          << "\t[c] Quit \n"
+         << "================================\n"
          << "> ";
     cin >> option;
     cin.ignore(100, '\n');
@@ -381,9 +389,9 @@ void quit()
 //add all your code here
     clearScreen(); //Remove and change to system("cls");
 
-    cout << "Are you sure you want to quit? <y/N>: ";
     char confirm;
     while (true) {
+        cout << "Are you sure you want to quit? <y/N>: ";
         try {
             cin >> confirm;
             cin.ignore(100, '\n');
@@ -395,9 +403,9 @@ void quit()
                     throw confirm;
             }
         }
-        catch(char) {
+        catch(char e) {
             clearScreen(); //Remove and change to system("cls");
-            cerr << "Invalid option. Try again.\n> ";
+            cerr << "Invalid option " << e << ". Try again.\n";
         }
     }
 
@@ -409,7 +417,7 @@ string EnterPassword()
     const char BACKSPACE = 127; 
     const char RETURN = 10; // 10 for curses.h, 13 for conio.h
 
-    string entry;
+    string entry; //says should be 5-digit pass. Confirm with prof
     char key = 0;
 
     noecho(); //Disable echoing; maybe remove
