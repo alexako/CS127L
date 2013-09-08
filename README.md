@@ -17,3 +17,11 @@ Solutions and logs of the Programming Exercises for CS127 lab
 **[Exercise 3 - Miles Per Gallon and Sort Array using Pointers](https://github.com/alexako/CS127L/blob/master/exer3/AREYES-EXER03.cpp)**
  - Miles Per Gallon was another straight forward implementation of class lectures
  - Used Insertion sort but problem stated values should be processed in sorted order
+ 
+**[Exercise 4 - Strings](https://github.com/alexako/CS127L/blob/master/exer4/AREYES_EXER04.cpp)**
+ - Palindrome was easy. Iterated through string from the start and end while testing if equivalent.
+ - Used pointer array to count letters of string
+ - Typecast string char to char in order to use tolower()/toupper()
+ - Problem with sleep() function. Not working at all.
+ - password() and EnterPassword() are using curses.h. Need to use windows.h for lab.
+ - iostream does not work with curses.h. Used printw() instead. Need to change back after testing.
