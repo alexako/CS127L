@@ -1,7 +1,8 @@
-**Log for Exercise 4**
- - Palindrome was easy. Iterated through string from the start and end while testing if equivalent.
- - Used pointer array to count letters of string
- - Typecast string char to char in order to use tolower()/toupper()
- - Problem with sleep() function. Not working at all.
- - password() and EnterPassword() are using curses.h. Need to use windows.h for lab.
- - iostream does not work with curses.h. Used printw() instead. Need to change back after testing.
+Create a program that will first ask the user to enter a 5-digit password. Attempt to input the password should only up to 3 attempts only (use exceptions handling try-throw catch for method for validation), if 3 attempts are made the program should terminate. If password is correct, then your program will clear the screen and should display a menu like the following below:
+
+[a] Check the palindrome
+[b] Read in a line of text 
+[c] Quit
+   
+For [a]: enter a word or group or words and determine wheter the word(s) are palindrome or not.
+
