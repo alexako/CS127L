@@ -6,3 +6,4 @@ Create a program that will first ask the user to enter a 5-digit password. Attem
    
 For [a]: enter a word or group or words and determine wheter the word(s) are palindrome or not.
 
+For [b]: enter a word or a group of words and determine the number of words, number of a-z (regardless of the capitalization), lowercase those uppercase letter and vice versa.
