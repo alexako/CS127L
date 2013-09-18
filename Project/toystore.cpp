@@ -26,7 +26,9 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
-#include <cstring> //for strcmp()
+#include <cstring> // for strcmp()
+#include <iomanip> // for setw()
+#include <stdlib.h> // for atoi(), atof()
 
 #ifdef _WIN32
 #include<conio.h>
@@ -45,12 +47,16 @@ void mainMenu();
 void adminMenu();
 void viewInventory();
 void adminLogin();
-void addProduct();
-void removeProduct();
-void viewUsers();
+void addProduct(); // Add product to inventory list
+void removeProduct();// Remove product from inventory list
+void viewUsers(); // View registered user list
 void quit();
 string enterpassword();
-bool ADMIN_PRIVELEGE = false;
+
+bool ADMIN_PRIVELEGE = true; //debug mode activated
+// Input files
+const char* USER_FILE = "data/users.txt"; // User list
+const char* INVENTORY_FILE = "data/inventory.txt"; // Inventory list
 
 
 struct users {
@@ -60,8 +66,10 @@ struct users {
 
 
 struct inventory {
-    char product[100];
-    char quantity[5];
+    string product;
+    int prodNum;
+    double price;
+    int quantity;
 };
 
 
@@ -77,12 +85,12 @@ void clearScreen() {
 
 void pauseScreen() {
 
-    cout << "\nPress <Enter> to continue...";
-
     #ifdef _WIN32
     system("pause");
     #endif
     #ifdef __linux
+    cout << "\nPress <Enter> to continue...";
+    cin.get();
     cin.clear();
     cin.ignore(100, '\n');
     #endif
@@ -138,17 +146,27 @@ void mainMenu() {
     while (true) { // Main Menu loop
         banner("Main Menu");
         try {
-            cout << "   1. View Toy Inventory\n"
-                 << "   2. Admin Login\n"
-                 << "   3. Quit\n\n"
-                 << "Selection: ";
+            cout << "   1. View Toy Inventory\n";
+            if (ADMIN_PRIVELEGE) cout << "   2. Logout\n";
+            else cout << "   2. Admin Login\n";
+            cout << "   3. Quit\n";
+            if (ADMIN_PRIVELEGE)
+                cout << "   4. Return to Admin menu\n"
+                 << "\nSelection: ";
 
             cin >> option;
 
             switch(option) {
                 case '1': viewInventory(); mainMenu();
-                case '2': adminLogin(); break;
-                case '3': quit(); break;
+                case '2':
+                    if (ADMIN_PRIVELEGE) ADMIN_PRIVELEGE = false;
+                    else adminLogin();
+                    mainMenu();
+                    break;
+                case '3': if (ADMIN_PRIVELEGE) ADMIN_PRIVELEGE = false;
+                case '4':
+                    if (ADMIN_PRIVELEGE) adminMenu();
+                    quit(); break;
                 default:
                     throw option;
             }
@@ -192,13 +210,18 @@ void adminMenu() {
                 case '2': addProduct(); break;
                 case '3': removeProduct(); break;
                 case '4': viewUsers(); break;
-                case '5': ADMIN_PRIVELEGE = false;
+                case '5':
+                    if (ADMIN_PRIVELEGE) {
+                        ADMIN_PRIVELEGE = false;
+                        clearScreen();
+                        cout << "\n\n\n\n\n\n\n\nSuccessfully logged out.\n\n\n";
+                        stall();
+                    }
                 case '6': mainMenu();
                 default:
                     throw option;
-            }
+            } // End switch
 
-            break; //out of Admin Menu loop
         }
         catch(char e) {
             clearScreen();
@@ -207,8 +230,6 @@ void adminMenu() {
             pauseScreen();
         }
     } // End Admin Menu loop
-
-    adminMenu();
 }
 
 
@@ -220,38 +241,40 @@ void adminLogin() {
     string line; //of input file
     users USER;
     ifstream userList;
-    userList.open("data/users.txt");
+    userList.open(USER_FILE);
     int attempts = 0;
 
     //Check if user is already logged in
     if (ADMIN_PRIVELEGE) {
-        cout << "An admin user already logged in.\n"
-             << "Please logout to sign in with a different user.\n";
+        cout << setw(3)
+             << "An admin user already logged in.\n"
+             << "Please logout to sign in with a different user.\n\n";
 
         pauseScreen();
         adminMenu();
     }
 
-    // Kills programs if too many failed attempts to log in
+    // Kills program if too many failed attempts to log in
     if (attempts > 2) {
         cerr << "Too many failed attempts to log in.\n"
              << "Exiting program...";
-        cin.get();
+        pauseScreen();
         exit(0);
     }
 
-    // Loads the users list file (data/users.txt)
+    // Checks if the users list file (data/users.txt) loaded properly
     try {
-        cout << "Loading...\n";
+        cout << "Loading...\n\n\n\n";
         stall();
         pauseScreen();
-        if (!userList.good())
+        clearScreen();
+        if (userList.fail())
             throw 'x';
     }
     catch(char) {
         clearScreen();
-        cerr << "Missing file.\n"
-             << "Could not locate users.txt\n";
+        cerr << "\n\n\nMissing file.\n"
+             << "Could not locate users.txt\n\n\n";
         pauseScreen();
         mainMenu();
     }
@@ -268,7 +291,7 @@ void adminLogin() {
         #ifdef _WIN32
         char username[100];
         cout << "Enter Username: ";
-        getline(cin, username);
+        cin >> username;
         #endif
         #ifdef __linux
         char username[100];
@@ -304,7 +327,8 @@ void adminLogin() {
             if (!user.compare(USER.username)
                 && !password.compare(USER.password)) {
                 clearScreen();
-                cout << "Access Authorized.\n";
+                cout << setw(5)
+                     << "\n\n\n\n\n\n\n\nAccess Authorized.\n";
                 #ifdef __linux
                 endwin();
                 #endif
@@ -324,6 +348,7 @@ void adminLogin() {
         #ifdef _WIN32
         pauseScreen();
         #endif
+        userList.close();
         mainMenu();
     }
 }
@@ -405,15 +430,131 @@ void quit() {
 //Admin Menu functions
 void viewInventory() {
 
-    cout << "In viewInventory()\n";
+    string readBuffer;
+    inventory items;
+    ifstream inventFile;
+    inventFile.open(INVENTORY_FILE);
+
+    banner("Inventory List");
+
+    cout << setw(1) << "Prod No."
+         << setw(7) << "Name"
+         << setw(16) << "Price / "
+         << setw(25) << "Quant.\n"
+         "-------------------------------------\n";
+
+    while (getline(inventFile, readBuffer)) { // Read each line
+
+        string::size_type start, end;
+        items.prodNum = atoi(readBuffer.substr(start = readBuffer.find("#")+1,
+                                    end = readBuffer.find('|')-1).c_str());
+        items.product = readBuffer.substr(start = readBuffer.find("|")+1,
+                                    end = readBuffer.find(">")-2); // Needs fixing
+        items.price = atof(readBuffer.substr(start = readBuffer.find(">")+2,
+                                    end = readBuffer.find('=')-1).c_str());
+        items.quantity = atoi(readBuffer.substr(start = readBuffer.find("=")+1,
+                                    end = readBuffer.find('\r')-1).c_str());
+
+        cout << setw(1) << items.prodNum // Print product number
+             << setw(15) << items.product; // Print product name
+        cout << setw(8) << showpoint << fixed << setprecision(2)
+             << items.price; // Print product price
+        cout << " / "
+             << setw(2) << items.quantity // Print quantity of product
+             << "\n\n\n";
+    } // End read inventory list
+
+
     pauseScreen();
+    inventFile.close();
 }
 
 
-void addProduct() {
+void addProduct() { // Overwrites file....will fix later
 
-    cout << "In addProduct()\n";
+    ofstream inventFile;
+    inventFile.open(INVENTORY_FILE);
+    inventory item;
+
+    banner("Add Product");
+
+    // Get product name
+    cout << "Enter product name: ";
+    cin >> item.product;
+    cin.get();
+
+    // Get product number
+    while (true) {
+        cout << "Enter product number: ";
+        try {
+            cin.clear();
+            cin.ignore(100, '\n');
+            cin >> item.prodNum;
+
+            if (item.prodNum < 10000 || item.prodNum > 99999 || !cin)
+                throw item.prodNum;
+
+            break; // out of while loop
+        }
+        catch(int x) {
+            clearScreen();
+            cerr << "Invalid product number: " << x << ". Must be 5 digits.\n";
+            pauseScreen();
+        }
+    }
+
+    // Get product price
+    cout << "Enter product price: $";
+    cin >> item.price;
+
+    // Get product quantity
+    cout << "Enter number currently in stock: ";
+    cin >> item.quantity;
+
+    banner("Add Product");
+
+    cout << "Product No. " << item.prodNum << '\n'
+         << "Name: " << item.product << '\n';
+    cout << "Price: $" << showpoint << fixed << setprecision(2)
+             << item.price << '\n'
+         << "Quantity: " << item.quantity << "\n\n\n";
+
+    // Write input to file
+    cout << "Saving " << item.product << " to inventory list...\n\n";
+
+    inventFile << "#" << item.prodNum << " | "
+               << item.product << " > "
+               << item.price << " = "
+               << item.quantity << "\r"; 
+
+    stall();
+    cout << "Saved successfully.\n\n\n";
     pauseScreen();
+    inventFile.close();
+    // End write input to file
+
+    clearScreen();
+
+    //Ask user if another item will be added
+    char confirm;
+    while (true) {
+        cout << "Would you like to add another product? <y/N>: ";
+        try {
+            cin >> confirm;
+            cin.ignore(100, '\n');
+
+            switch (tolower(confirm)) {
+                case 'y': addProduct();
+                case 'n': mainMenu();
+                default:
+                    throw confirm;
+            }
+        }
+        catch(char a) {
+            clearScreen();
+            cerr << "Invalid option " << a << ". Try again.\n";
+        }
+    }// End another item loop
 }
 
 
@@ -426,6 +567,29 @@ void removeProduct() {
 
 void viewUsers() {
 
-    cout << "In viewUsers()\n";
+    string readBuffer;
+    users user;
+    ifstream userFile;
+    userFile.open(USER_FILE);
+
+    banner("User List");
+
+    cout << "Registered Users\n"
+         << "-----------------\n";
+
+    int count = 0;
+    while (getline(userFile, readBuffer)) { // Read each line
+
+            count += 1;
+            string::size_type start, end;
+            user.username = readBuffer.substr(start = readBuffer.find("id:")+4,
+                                    end = readBuffer.find('>')-5);
+
+            cout << count << ".  " << user.username << "\n";
+    } // End read inventory list
+
+    cout << "\nTotal number of users: " << count << "\n\n\n";
+
     pauseScreen();
+    userFile.close();
 }
