@@ -29,6 +29,7 @@
 #include <cstring> // for strcmp()
 #include <iomanip> // for setw()
 #include <stdlib.h> // for atoi(), atof()
+#include <sstream> // for iss()
 
 #ifdef _WIN32
 #include<conio.h>
@@ -48,7 +49,6 @@ void adminMenu();
 void viewInventory();
 void adminLogin();
 void addProduct(); // Add product to inventory list
-void removeProduct();// Remove product from inventory list
 void viewUsers(); // View registered user list
 void quit();
 string enterpassword();
@@ -90,7 +90,6 @@ void pauseScreen() {
     #endif
     #ifdef __linux
     cout << "\nPress <Enter> to continue...";
-    cin.get();
     cin.clear();
     cin.ignore(100, '\n');
     #endif
@@ -193,13 +192,12 @@ void adminMenu() {
         try {
             cout << "   1. View Toy Inventory\n"
                  << "   2. Add New Toy Product\n"
-                 << "   3. Remove Toy Product\n"
-                 << "   4. View User Database\n";
+                 << "   3. View User Database\n";
             if (ADMIN_PRIVELEGE)
-                cout << "   5. Logout\n"
-                     << "   6. Return to Main Menu\n";
+                cout << "   4. Logout\n"
+                     << "   5. Return to Main Menu\n";
             else
-                cout << "   5. Return to Main Menu\n";
+                cout << "   4. Return to Main Menu\n";
             cout << "\n"
                  << "Selection: ";
 
@@ -208,16 +206,15 @@ void adminMenu() {
             switch(option) {
                 case '1': viewInventory(); break;
                 case '2': addProduct(); break;
-                case '3': removeProduct(); break;
-                case '4': viewUsers(); break;
-                case '5':
+                case '3': viewUsers(); break;
+                case '4':
                     if (ADMIN_PRIVELEGE) {
                         ADMIN_PRIVELEGE = false;
                         clearScreen();
                         cout << "\n\n\n\n\n\n\n\nSuccessfully logged out.\n\n\n";
                         stall();
                     }
-                case '6': mainMenu();
+                case '5': mainMenu();
                 default:
                     throw option;
             } // End switch
@@ -427,6 +424,22 @@ void quit() {
     }
 }
 
+//Parser
+string parse(string line, string delimiter) {
+
+    string token;
+    string::size_type pos = 0;
+
+    while ((pos = line.find_first_of(delimiter)) != string::npos) {
+
+        token = line.substr(0, pos);
+        line.erase(0, pos + delimiter.length());
+    }
+
+    return token;
+}
+
+
 //Admin Menu functions
 void viewInventory() {
 
@@ -443,17 +456,19 @@ void viewInventory() {
          << setw(25) << "Quant.\n"
          "-------------------------------------\n";
 
+    // Parse inventory list
+    string::size_type start, end;
     while (getline(inventFile, readBuffer)) { // Read each line
-
+/*
         string::size_type start, end;
         items.prodNum = atoi(readBuffer.substr(start = readBuffer.find("#")+1,
                                     end = readBuffer.find('|')-1).c_str());
         items.product = readBuffer.substr(start = readBuffer.find("|")+1,
-                                    end = readBuffer.find(">")-2); // Needs fixing
-        items.price = atof(readBuffer.substr(start = readBuffer.find(">")+2,
+                                    end = readBuffer.find(">")-1); // Needs fixing
+        items.price = atof(readBuffer.substr(start = readBuffer.find(">")+1,
                                     end = readBuffer.find('=')-1).c_str());
         items.quantity = atoi(readBuffer.substr(start = readBuffer.find("=")+1,
-                                    end = readBuffer.find('\r')-1).c_str());
+                                    end = readBuffer.find('\n')-1).c_str());
 
         cout << setw(1) << items.prodNum // Print product number
              << setw(15) << items.product; // Print product name
@@ -461,8 +476,22 @@ void viewInventory() {
              << items.price; // Print product price
         cout << " / "
              << setw(2) << items.quantity // Print quantity of product
-             << "\n\n\n";
-    } // End read inventory list
+             << "\n";*/
+
+        string token, delimiter = " ";
+        string::size_type pos = 0;
+
+        while ((pos = readBuffer.find_first_of(delimiter)) != string::npos) {
+
+            token = readBuffer.substr(0, pos);
+            readBuffer.erase(0, pos + delimiter.length());
+        
+            items.prodNum = atoi(token.c_str());
+            items.product = token;
+            items.price = atof(token.c_str());
+            items.quantity = atoi(token.c_str());
+        }
+    } // End parse inventory list
 
 
     pauseScreen();
@@ -470,10 +499,10 @@ void viewInventory() {
 }
 
 
-void addProduct() { // Overwrites file....will fix later
+void addProduct() {
 
     ofstream inventFile;
-    inventFile.open(INVENTORY_FILE);
+    inventFile.open(INVENTORY_FILE, ofstream::out | ofstream::app); // append to file
     inventory item;
 
     banner("Add Product");
@@ -481,14 +510,11 @@ void addProduct() { // Overwrites file....will fix later
     // Get product name
     cout << "Enter product name: ";
     cin >> item.product;
-    cin.get();
 
     // Get product number
     while (true) {
         cout << "Enter product number: ";
         try {
-            cin.clear();
-            cin.ignore(100, '\n');
             cin >> item.prodNum;
 
             if (item.prodNum < 10000 || item.prodNum > 99999 || !cin)
@@ -522,7 +548,7 @@ void addProduct() { // Overwrites file....will fix later
     // Write input to file
     cout << "Saving " << item.product << " to inventory list...\n\n";
 
-    inventFile << "#" << item.prodNum << " | "
+    inventFile << "\n#" << item.prodNum << " | "
                << item.product << " > "
                << item.price << " = "
                << item.quantity << "\r"; 
@@ -558,13 +584,6 @@ void addProduct() { // Overwrites file....will fix later
 }
 
 
-void removeProduct() {
-
-    cout << "In removeProduct()\n";
-    pauseScreen();
-}
-
-
 void viewUsers() {
 
     string readBuffer;
@@ -577,16 +596,17 @@ void viewUsers() {
     cout << "Registered Users\n"
          << "-----------------\n";
 
+    //Parse users
     int count = 0;
     while (getline(userFile, readBuffer)) { // Read each line
 
             count += 1;
             string::size_type start, end;
-            user.username = readBuffer.substr(start = readBuffer.find("id:")+4,
+            user.username = readBuffer.substr(start = readBuffer.find("id: ")+4,
                                     end = readBuffer.find('>')-5);
 
             cout << count << ".  " << user.username << "\n";
-    } // End read inventory list
+    } // End parse users
 
     cout << "\nTotal number of users: " << count << "\n\n\n";
 
