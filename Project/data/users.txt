@@ -1,3 +1,3 @@
-admin1 > password1;
-admin2 > password2;
-admin3 > password3;
+id: admin1 > key: password1
+id: admin2 > key: password2
+admin3 > password3

@@ -1,24 +1,24 @@
 /*
  * toystore.cpp
- * 
+ *
  * Copyright 2013 Alex <alex@kludge>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
- * 
- * 
+ *
+ *
  */
 
 
@@ -90,6 +90,7 @@ void pauseScreen() {
     #endif
     #ifdef __linux
     cout << "\nPress <Enter> to continue...";
+    cin.get();
     cin.clear();
     cin.ignore(100, '\n');
     #endif
@@ -284,7 +285,7 @@ void adminLogin() {
 
     while (true) {
 
-        // Get username from user 
+        // Get username from user
         #ifdef _WIN32
         char username[100];
         cout << "Enter Username: ";
@@ -317,6 +318,9 @@ void adminLogin() {
                                     end = line.find('>')-5);
             USER.password = line.substr(start = line.find("key:")+5,
                                     end = line.find('\r'));
+
+            cout << USER.username << endl
+                 << USER.password << endl;
 
             // Test user id and password pair with user input
             string user(username); // Construct string for comparison
@@ -370,7 +374,7 @@ string enterpassword() {
     #endif
 
     while ((key = getch()) != RETURN) {
-        
+
         if (key == BACKSPACE && entry.length() > 0) {
             #ifdef _WIN32
             cout << "\b \b";
@@ -424,21 +428,6 @@ void quit() {
     }
 }
 
-//Parser
-string parse(string line, string delimiter) {
-
-    string token;
-    string::size_type pos = 0;
-
-    while ((pos = line.find_first_of(delimiter)) != string::npos) {
-
-        token = line.substr(0, pos);
-        line.erase(0, pos + delimiter.length());
-    }
-
-    return token;
-}
-
 
 //Admin Menu functions
 void viewInventory() {
@@ -459,38 +448,27 @@ void viewInventory() {
     // Parse inventory list
     string::size_type start, end;
     while (getline(inventFile, readBuffer)) { // Read each line
-/*
+
         string::size_type start, end;
         items.prodNum = atoi(readBuffer.substr(start = readBuffer.find("#")+1,
                                     end = readBuffer.find('|')-1).c_str());
         items.product = readBuffer.substr(start = readBuffer.find("|")+1,
-                                    end = readBuffer.find(">")-1); // Needs fixing
+                                    end = readBuffer.find(" > ")-1); // Needs fixing
         items.price = atof(readBuffer.substr(start = readBuffer.find(">")+1,
                                     end = readBuffer.find('=')-1).c_str());
         items.quantity = atoi(readBuffer.substr(start = readBuffer.find("=")+1,
                                     end = readBuffer.find('\n')-1).c_str());
 
-        cout << setw(1) << items.prodNum // Print product number
-             << setw(15) << items.product; // Print product name
-        cout << setw(8) << showpoint << fixed << setprecision(2)
+        cout << setw(1) << items.prodNum; // Print product number
+        string prod = items.product.substr(0, items.product.find(" >"));
+        if (prod.length() > 5) prod.resize(5); // Reduce string to 7 
+        cout << setw(10) << items.product.substr(0, items.product.find(" >")); // Print product name
+        cout << setw(13) << showpoint << fixed << setprecision(2)
              << items.price; // Print product price
         cout << " / "
              << setw(2) << items.quantity // Print quantity of product
-             << "\n";*/
+             << "\n";
 
-        string token, delimiter = " ";
-        string::size_type pos = 0;
-
-        while ((pos = readBuffer.find_first_of(delimiter)) != string::npos) {
-
-            token = readBuffer.substr(0, pos);
-            readBuffer.erase(0, pos + delimiter.length());
-        
-            items.prodNum = atoi(token.c_str());
-            items.product = token;
-            items.price = atof(token.c_str());
-            items.quantity = atoi(token.c_str());
-        }
     } // End parse inventory list
 
 
@@ -542,7 +520,7 @@ void addProduct() {
     cout << "Product No. " << item.prodNum << '\n'
          << "Name: " << item.product << '\n';
     cout << "Price: $" << showpoint << fixed << setprecision(2)
-             << item.price << '\n'
+         << item.price << '\n'
          << "Quantity: " << item.quantity << "\n\n\n";
 
     // Write input to file
@@ -551,7 +529,7 @@ void addProduct() {
     inventFile << "\n#" << item.prodNum << " | "
                << item.product << " > "
                << item.price << " = "
-               << item.quantity << "\r"; 
+               << item.quantity << "\r";
 
     stall();
     cout << "Saved successfully.\n\n\n";
