@@ -123,11 +123,12 @@ int main() {
     // Program Functionality overview
     cout << "Purpose: \n\n"
          << "   This program provides the user\n"
-         << "   with access to the store's\n"
+         << "   with access to the toy store's\n"
          << "   inventory. The user will be able\n"
-         << "   to inquire, search, update, add,\n"
-         << "   or remove items in the database.\n\n\n"
-         << "A Project for CS127L.\n\n\n\n\n\n\n";
+         << "   to view and add items to a file.\n"
+         << "   A list of all registered users\n"
+         << "   will also be accessible.\n\n\n\n"
+         << "A Project for CS127L.\n\n\n\n\n\n";
 
     pauseScreen();
 
