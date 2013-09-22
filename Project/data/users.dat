@@ -1,0 +1,7 @@
+id: admin1 > key: password1
+id: admin2 > key: password2
+id: admin3 > key: password3
+id: user1 > key: pass1
+id: user2 > key: pass2
+id: user3 > key: pass3
+id: anon1 > key: secret1

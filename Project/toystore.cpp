@@ -29,7 +29,6 @@
 #include <cstring> // for strcmp()
 #include <iomanip> // for setw()
 #include <stdlib.h> // for atoi(), atof()
-#include <sstream> // for iss()
 
 #ifdef _WIN32
 #include<conio.h>
@@ -54,9 +53,9 @@ void quit();
 string enterpassword();
 
 bool ADMIN_PRIVELEGE = true; //debug mode activated
-// Input files
-const char* USER_FILE = "data/users.txt"; // User list
-const char* INVENTORY_FILE = "data/inventory.txt"; // Inventory list
+/* Input files */
+const char* USER_FILE = "data/users.dat"; // User list
+const char* INVENTORY_FILE = "data/inventory.dat"; // Inventory list
 
 
 struct users {
@@ -121,7 +120,7 @@ int main() {
 
     banner("Welcome");
 
-    // Program Functionality
+    // Program Functionality overview
     cout << "Purpose: \n\n"
          << "   This program provides the user\n"
          << "   with access to the store's\n"
@@ -151,8 +150,8 @@ void mainMenu() {
             else cout << "   2. Admin Login\n";
             cout << "   3. Quit\n";
             if (ADMIN_PRIVELEGE)
-                cout << "   4. Return to Admin menu\n"
-                 << "\nSelection: ";
+                cout << "   4. Return to Admin menu\n";
+            cout << "\nSelection: ";
 
             cin >> option;
 
@@ -432,10 +431,12 @@ void quit() {
 //Admin Menu functions
 void viewInventory() {
 
+    int count = 0; //number of toys in inventory
     string readBuffer;
     inventory items;
     ifstream inventFile;
     inventFile.open(INVENTORY_FILE);
+
 
     banner("Inventory List");
 
@@ -453,24 +454,32 @@ void viewInventory() {
         items.prodNum = atoi(readBuffer.substr(start = readBuffer.find("#")+1,
                                     end = readBuffer.find('|')-1).c_str());
         items.product = readBuffer.substr(start = readBuffer.find("|")+1,
-                                    end = readBuffer.find(" > ")-1); // Needs fixing
+                                    end = readBuffer.find(" > ")-1);
         items.price = atof(readBuffer.substr(start = readBuffer.find(">")+1,
                                     end = readBuffer.find('=')-1).c_str());
         items.quantity = atoi(readBuffer.substr(start = readBuffer.find("=")+1,
                                     end = readBuffer.find('\n')-1).c_str());
 
-        cout << setw(1) << items.prodNum; // Print product number
-        string prod = items.product.substr(0, items.product.find(" >"));
-        if (prod.length() > 5) prod.resize(5); // Reduce string to 7 
-        cout << setw(10) << items.product.substr(0, items.product.find(" >")); // Print product name
-        cout << setw(13) << showpoint << fixed << setprecision(2)
-             << items.price; // Print product price
-        cout << " / "
-             << setw(2) << items.quantity // Print quantity of product
-             << "\n";
+        if (items.prodNum) {
+            cout << setw(1) << items.prodNum; // Print product number
+            string prod = items.product.substr(0, items.product.find(" >"));
+            if (prod.length() > 7) cout << setw(10) << prod.substr(0, 8); // Reduce string to 7
+            else cout << setw(10) << items.product.substr(0, items.product.find(" >")); // Print product name
+            cout << setw(13) << showpoint << fixed << setprecision(2)
+                 << items.price; // Print product price
+            cout << " / "
+                 << setw(2) << items.quantity // Print quantity of product
+                 << "\n";
+
+            count += 1;
+        }
+        else cout << "\t     -- EMPTY --- \n";
 
     } // End parse inventory list
+    cout << "-------------------------------------\n\n\n";
 
+    cout << "Total number of toys: " << count
+         << "\n\n";
 
     pauseScreen();
     inventFile.close();
@@ -486,13 +495,15 @@ void addProduct() {
     banner("Add Product");
 
     // Get product name
+    cin.ignore();
     cout << "Enter product name: ";
-    cin >> item.product;
+    getline(cin, item.product);
 
     // Get product number
     while (true) {
         cout << "Enter product number: ";
         try {
+            cin.clear();
             cin >> item.prodNum;
 
             if (item.prodNum < 10000 || item.prodNum > 99999 || !cin)
@@ -523,7 +534,7 @@ void addProduct() {
          << item.price << '\n'
          << "Quantity: " << item.quantity << "\n\n\n";
 
-    // Write input to file
+    // Write input to file and encode
     cout << "Saving " << item.product << " to inventory list...\n\n";
 
     inventFile << "\n#" << item.prodNum << " | "
@@ -585,8 +596,9 @@ void viewUsers() {
 
             cout << count << ".  " << user.username << "\n";
     } // End parse users
+    cout << "-----------------\n\n\n";
 
-    cout << "\nTotal number of users: " << count << "\n\n\n";
+    cout << "Total number of users: " << count << "\n\n\n";
 
     pauseScreen();
     userFile.close();
