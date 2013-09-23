@@ -52,7 +52,7 @@ void viewUsers(); // View registered user list
 void quit();
 string enterpassword();
 
-bool ADMIN_PRIVELEGE = true; //debug mode activated
+bool ADMIN_PRIVELEGE = false; //debug mode deactivated
 /* Input files */
 const char* USER_FILE = "data/users.dat"; // User list
 const char* INVENTORY_FILE = "data/inventory.dat"; // Inventory list
@@ -260,7 +260,7 @@ void adminLogin() {
         exit(0);
     }
 
-    // Checks if the users list file (data/users.txt) loaded properly
+    // Checks if the users list file (data/users.dat) loaded properly
     try {
         cout << "Loading...\n\n\n\n";
         stall();
@@ -272,7 +272,7 @@ void adminLogin() {
     catch(char) {
         clearScreen();
         cerr << "\n\n\nMissing file.\n"
-             << "Could not locate users.txt\n\n\n";
+             << "Could not locate users.dat\n\n\n";
         pauseScreen();
         mainMenu();
     }
@@ -437,6 +437,23 @@ void viewInventory() {
     inventory items;
     ifstream inventFile;
     inventFile.open(INVENTORY_FILE);
+
+    // Checks if the users list file (data/inventory.dat) loaded properly
+    try {
+        cout << "Loading...\n\n\n\n";
+        stall();
+        pauseScreen();
+        clearScreen();
+        if (inventFile.fail())
+            throw 'x';
+    }
+    catch(char) {
+        clearScreen();
+        cerr << "\n\n\nMissing file.\n"
+             << "Could not locate inventory.dat\n\n\n";
+        pauseScreen();
+        mainMenu();
+    }
 
 
     banner("Inventory List");
