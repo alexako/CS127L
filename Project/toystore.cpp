@@ -52,6 +52,7 @@ void viewUsers(); // View registered user list
 void quit();
 string enterpassword();
 
+int attempts = 0;
 bool ADMIN_PRIVELEGE = false; //debug mode deactivated
 /* Input files */
 const char* USER_FILE = "data/users.dat"; // User list
@@ -240,7 +241,6 @@ void adminLogin() {
     users USER;
     ifstream userList;
     userList.open(USER_FILE);
-    int attempts = 0;
 
     //Check if user is already logged in
     if (ADMIN_PRIVELEGE) {
@@ -319,9 +319,6 @@ void adminLogin() {
             USER.password = line.substr(start = line.find("key:")+5,
                                     end = line.find('\r'));
 
-            cout << USER.username << endl
-                 << USER.password << endl;
-
             // Test user id and password pair with user input
             string user(username); // Construct string for comparison
 
@@ -350,7 +347,7 @@ void adminLogin() {
         pauseScreen();
         #endif
         userList.close();
-        mainMenu();
+        adminLogin();
     }
 }
 
@@ -620,4 +617,23 @@ void viewUsers() {
 
     pauseScreen();
     userFile.close();
+}
+
+void searchProduct() {
+
+    string readBuffer;
+    string *products = new string[100];
+    inventory stock;
+    ifstream stockFile;
+    stockFile.open("test.txt");
+
+    banner("Search");
+
+    cout << "Enter the product number <ex. 32512>: #";
+
+    //Parse file
+    for (int index = 0; getline(stockFile, readBuffer); index++)
+        product[index] = readBuffer;
+
+    
 }
