@@ -46,6 +46,7 @@ using namespace std;
 void mainMenu();
 void adminMenu();
 void viewInventory();
+void searchProduct();
 void adminLogin();
 void addProduct(); // Add product to inventory list
 void viewUsers(); // View registered user list
@@ -147,25 +148,27 @@ void mainMenu() {
     while (true) { // Main Menu loop
         banner("Main Menu");
         try {
-            cout << "   1. View Toy Inventory\n";
-            if (ADMIN_PRIVELEGE) cout << "   2. Logout\n";
-            else cout << "   2. Admin Login\n";
-            cout << "   3. Quit\n";
+            cout << "   1. View Toy Inventory\n"
+                 << "   2. Search for Product\n";
+            if (ADMIN_PRIVELEGE) cout << "   3. Logout\n";
+            else cout << "   3. Admin Login\n";
+            cout << "   4. Quit\n";
             if (ADMIN_PRIVELEGE)
-                cout << "   4. Return to Admin menu\n";
+                cout << "   5. Return to Admin menu\n";
             cout << "\nSelection: ";
 
             cin >> option;
 
             switch(option) {
                 case '1': viewInventory(); mainMenu();
-                case '2':
+                case '2': searchProduct(); mainMenu();
+                case '3':
                     if (ADMIN_PRIVELEGE) ADMIN_PRIVELEGE = false;
                     else adminLogin();
                     mainMenu();
                     break;
-                case '3': if (ADMIN_PRIVELEGE) ADMIN_PRIVELEGE = false;
-                case '4':
+                case '4': if (ADMIN_PRIVELEGE) ADMIN_PRIVELEGE = false;
+                case '5':
                     if (ADMIN_PRIVELEGE) adminMenu();
                     quit(); break;
                 default:
@@ -193,13 +196,14 @@ void adminMenu() {
         banner("Admin Menu");
         try {
             cout << "   1. View Toy Inventory\n"
-                 << "   2. Add New Toy Product\n"
-                 << "   3. View User Database\n";
+                 << "   2. Search for Toy Product\n"
+                 << "   3. Add New Toy Product\n"
+                 << "   4. View User Database\n";
             if (ADMIN_PRIVELEGE)
-                cout << "   4. Logout\n"
-                     << "   5. Return to Main Menu\n";
+                cout << "   5. Logout\n"
+                     << "   6. Return to Main Menu\n";
             else
-                cout << "   4. Return to Main Menu\n";
+                cout << "   5. Return to Main Menu\n";
             cout << "\n"
                  << "Selection: ";
 
@@ -207,16 +211,17 @@ void adminMenu() {
 
             switch(option) {
                 case '1': viewInventory(); break;
-                case '2': addProduct(); break;
-                case '3': viewUsers(); break;
-                case '4':
+                case '2': searchProduct(); break;
+                case '3': addProduct(); break;
+                case '4': viewUsers(); break;
+                case '5':
                     if (ADMIN_PRIVELEGE) {
                         ADMIN_PRIVELEGE = false;
                         clearScreen();
                         cout << "\n\n\n\n\n\n\n\nSuccessfully logged out.\n\n\n";
                         stall();
                     }
-                case '5': mainMenu();
+                case '6': mainMenu();
                 default:
                     throw option;
             } // End switch
@@ -621,19 +626,41 @@ void viewUsers() {
 
 void searchProduct() {
 
-    string readBuffer;
-    string *products = new string[100];
+    string readBuffer, productnum, query;
     inventory stock;
     ifstream stockFile;
-    stockFile.open("test.txt");
+    stockFile.open(INVENTORY_FILE);
 
     banner("Search");
 
-    cout << "Enter the product number <ex. 32512>: #";
+    cout << "Enter the product number\n <ex. 32512>: #";
+    cin >> query;
 
     //Parse file
-    for (int index = 0; getline(stockFile, readBuffer); index++)
-        product[index] = readBuffer;
+    while (getline(stockFile, readBuffer)) { // Read each line from file
 
-    
+        // Search each line for product id
+        string::size_type start = 1, end = 5;
+        if (readBuffer.length() > 4) {
+            productnum = readBuffer.substr(start, end);
+            cout << productnum << endl;
+        }
+
+        if (!productnum.compare(query)) {
+            clearScreen();
+            cout << setw(5)
+                 << "\n\n\n\n\n\n\n\nFound.\n";
+            stall();
+            clearScreen();
+            banner(query);
+            cout << readBuffer << "\n";
+            pauseScreen();
+            mainMenu();
+        }
+    }
+
+    cout << "Product number #" << query << " not found.\n"
+         << "Try again. \n";
+    pauseScreen();
+    searchProduct();
 }
